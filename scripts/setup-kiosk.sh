@@ -15,6 +15,7 @@ sudo apt install --no-install-recommends -y \
   openbox \
   unclutter \
   xdotool \
+  x11-utils \
   surf
 
 sudo hostnamectl set-hostname "$HOSTNAME"
