@@ -45,7 +45,7 @@ EOF_BASH_PROFILE
 mkdir -p "$HOME/.surf/styles"
 touch "$HOME/.surf/styles/default.css"
 
-cat > "$HOME/.xinitrc" <<'EOF_XINITRC'
+cat > ~/.xinitrc <<'EOF'
 #!/bin/sh
 
 URL="https://ice.bayareacurling.org"
@@ -61,33 +61,20 @@ xset s noblank
 openbox-session &
 unclutter -idle 0 &
 
-surf "$URL" &
+surf -g 1920x1080+0+0 "$URL" &
 
-WINDOW_ID=""
-
-for i in $(seq 1 30); do
-  WINDOW_ID=$(xdotool search --onlyvisible --class surf | head -n 1)
-  if [ -n "$WINDOW_ID" ]; then
-    break
-  fi
-  sleep 1
-done
-
-SCREEN_SIZE=$(xdpyinfo | awk '/dimensions:/ {print $2}')
-WIDTH=$(echo "$SCREEN_SIZE" | cut -d'x' -f1)
-HEIGHT=$(echo "$SCREEN_SIZE" | cut -d'x' -f2)
-
-xdotool windowmove "$WINDOW_ID" 0 0
-xdotool windowsize "$WINDOW_ID" "$WIDTH" "$HEIGHT"
+sleep 10
 
 while true; do
-  xdotool windowmove "$WINDOW_ID" 0 0 || true
-  xdotool windowsize "$WINDOW_ID" "$WIDTH" "$HEIGHT" || true
-  xdotool key --window "$WINDOW_ID" F5 || true
+  WINDOW_ID=$(xdotool search --onlyvisible --class surf | head -n 1)
+
+  if [ -n "$WINDOW_ID" ]; then
+    xdotool key --window "$WINDOW_ID" F5 || true
+  fi
+
   sleep 300
 done
-EOF_XINITRC
+EOF
 
-chmod +x "$HOME/.xinitrc"
-
+chmod +x ~/.xinitrc
 sudo reboot
